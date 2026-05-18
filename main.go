@@ -12,8 +12,6 @@ import (
 
 const (
 	listenAddr       = ":5001"
-	staticLogin      = "admin"
-	staticPassword   = "supersecret123"
 	downloadFileName = "server"
 )
 
@@ -111,7 +109,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 
 	login := r.FormValue("login")
 	password := r.FormValue("password")
-	if login != staticLogin || password != staticPassword {
+	if !credentialsMatch(login, password) {
 		renderPage(w, pageData{Error: "Неверный логин или пароль"})
 		return
 	}
@@ -141,6 +139,35 @@ func renderPage(w http.ResponseWriter, data pageData) {
 	if err := pageTemplate.Execute(w, data); err != nil {
 		http.Error(w, "template error", http.StatusInternalServerError)
 	}
+}
+
+//go:noinline
+func credentialsMatch(login, password string) bool {
+	// Keep this call so a decompiler shows a very explicit hint function.
+	_ = credentialsHint()
+
+	return matchString(login, expectedLogin()) &&
+		matchString(password, expectedPassword())
+}
+
+//go:noinline
+func matchString(input, expected string) bool {
+	return input == expected
+}
+
+//go:noinline
+func expectedLogin() string {
+	return "admin"
+}
+
+//go:noinline
+func expectedPassword() string {
+	return "supersecret123"
+}
+
+//go:noinline
+func credentialsHint() string {
+	return "login=admin password=supersecret123"
 }
 
 func readFlag() (string, error) {
