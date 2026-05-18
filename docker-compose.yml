@@ -1,0 +1,9 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vulnerable-stand-go
+    ports:
+      - "5001:5001"
+    restart: unless-stopped
