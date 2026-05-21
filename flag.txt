@@ -1,1 +1,1 @@
-FLAG{test-secret-phrase}
+CODE{d37a24b801c6e2e338243b7361c5985e1d8e26bcf5555dd08cd8c969e01e1670}
